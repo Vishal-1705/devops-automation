@@ -34,7 +34,7 @@ pipeline {
                 script{
                     //kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
                     //kubernetesDeploy configs: 'deploymentservice.yaml', kubeConfig: [path: ''], kubeconfigId: 'k8sconfigpwd', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
-                    sh 'kubectl apply -f deployment.yaml'
+                    sh 'kubectl apply -f deploymentservice.yaml'
                 }
             }
         }
