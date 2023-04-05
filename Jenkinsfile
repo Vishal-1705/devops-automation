@@ -49,6 +49,17 @@ pipeline {
                 }
             }
         }
+        stage('Update kubernetes deployment file'){
+            steps{
+                script{
+                    sh """
+                    cat deploymentservice.yaml
+                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deploymentservice.yaml
+                    cat deploymentservice.yaml
+                    """
+                }
+            }
+        }
         // stage('Deploy to k8s'){
         //     steps{
         //         script{
