@@ -60,6 +60,22 @@ pipeline {
                 }
             }
         }
+        stage('Push the changed deployment file to git'){
+            steps{
+                script{
+                    sh """
+                    git config --global user.name "Vishal"
+                    git config --global user.email "vishalreddy304@gmail.com"
+                    git add deploymentservice.yaml
+                    git commit -m "Push the changed deployment file to git"
+                    """
+
+                    withCredentials([gitUsernamePassword(credentialsId: 'github-credentials', gitToolName: 'Default')]) {
+                        sh "git push https://github.com/Vishal-1705/devops-automation.git main"
+                    }
+                }
+            }
+        }
         // stage('Deploy to k8s'){
         //     steps{
         //         script{
