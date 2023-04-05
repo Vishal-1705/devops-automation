@@ -23,7 +23,8 @@ pipeline {
             steps{
                 script{
                     sh 'sudo chmod 666 /var/run/docker.sock'
-                    sh 'docker build -t vishalbasani/devops-integration .'
+                    //sh 'docker build -t ${IMAGE_NAME} .'
+                    docker_image = docker.build "${IMAGE_NAME}"
                 }
             }
         }
@@ -34,18 +35,28 @@ pipeline {
                    sh 'docker login -u vishalbasani -p ${dockerhubpwd}'
 
         }
-                   sh 'docker push vishalbasani/devops-integration'
+                   //sh 'docker push ${IMAGE_NAME}'
+                   docker_image.push("${IMAGE_TAG}")
+                   docker_image.push("latest")
                 }
             }
         }
-        stage('Deploy to k8s'){
+        stage('Delete docker images'){
             steps{
                 script{
-                    kubernetesDeploy(configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
-                    //kubernetesDeploy configs: 'deploymentservice.yaml', kubeConfig: [path: ''], kubeconfigId: 'k8sconfigpwd', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
-                    //sh 'kubectl apply -f deploymentservice.yaml'
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker rmi ${IMAGE_NAME}:latest"
                 }
             }
         }
+        // stage('Deploy to k8s'){
+        //     steps{
+        //         script{
+        //             kubernetesDeploy(configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
+        //             //kubernetesDeploy configs: 'deploymentservice.yaml', kubeConfig: [path: ''], kubeconfigId: 'k8sconfigpwd', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+        //             //sh 'kubectl apply -f deploymentservice.yaml'
+        //         }
+        //     }
+        // }
     }
 }
