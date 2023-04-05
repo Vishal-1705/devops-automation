@@ -1,8 +1,17 @@
 pipeline {
     agent any
+
     // tools{
     //     maven 'maven_3_5_0'
     // }
+
+    environment{
+        DOCKERHUB_USERNAME = "vishalbasani"
+        APP_NAME = "devops-integration"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_NAME = "${DOCKERHUB_USERNAME}" + "/" + "${APP_NAME}"
+    }
+
     stages{
         stage('Build Maven'){
             steps{
@@ -24,7 +33,7 @@ pipeline {
                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                    sh 'docker login -u vishalbasani -p ${dockerhubpwd}'
 
-}
+        }
                    sh 'docker push vishalbasani/devops-integration'
                 }
             }
