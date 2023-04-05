@@ -71,6 +71,7 @@ pipeline {
                     """
 
                     withCredentials([gitUsernamePassword(credentialsId: 'github-credentials', gitToolName: 'Default')]) {
+                        sh "git pull --rebase https://github.com/Vishal-1705/devops-automation.git main"
                         sh "git push https://github.com/Vishal-1705/devops-automation.git main"
                     }
                 }
