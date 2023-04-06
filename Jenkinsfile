@@ -8,7 +8,7 @@ pipeline {
     environment{
         DOCKERHUB_USERNAME = "vishalbasani"
         APP_NAME = "devops-integration"
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        //IMAGE_TAG = "${BUILD_NUMBER}"
         IMAGE_NAME = "${DOCKERHUB_USERNAME}" + "/" + "${APP_NAME}"
     }
 
@@ -36,16 +36,16 @@ pipeline {
 
         }
                    //sh 'docker push ${IMAGE_NAME}'
-                   docker_image.push("${IMAGE_TAG}")
-                   docker_image.push("latest")
+                   docker_image.push("${env.BUILD_NUMBER}")
+                   //docker_image.push("latest")
                 }
             }
         }
         stage('Delete docker images'){
             steps{
                 script{
-                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker rmi ${IMAGE_NAME}:latest"
+                    sh "docker rmi ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    //sh "docker rmi ${IMAGE_NAME}:latest"
                 }
             }
         }
@@ -86,5 +86,9 @@ pipeline {
         //         }
         //     }
         // }
+        stage('Trigger Manifest Update'){
+            echo "Triggering manifest update file"
+            build job: 'devops-automation-updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
+        }
     }
 }
