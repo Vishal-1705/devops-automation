@@ -87,8 +87,10 @@ pipeline {
         //     }
         // }
         stage('Trigger Manifest Update'){
-            echo "Triggering manifest update file"
-            build job: 'devops-automation-updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
+            steps{
+                echo "Triggering manifest update file"
+                build job: 'devops-automation-updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
+            }
         }
     }
 }
